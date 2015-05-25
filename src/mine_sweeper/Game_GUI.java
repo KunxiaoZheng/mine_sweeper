@@ -2,41 +2,69 @@ package mine_sweeper;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 public class Game_GUI extends JFrame implements ActionListener {
-	JPanel panel = new JPanel();
 
-	JLabel answer = new JLabel("");
-	JButton pressme = new JButton("Press Me");
+	ArrayList<JButton> buttonList = new ArrayList<JButton>();
 
-	Game_GUI() {
+	JPanel topPanel = new JPanel();
+	JPanel buttonPanel = new JPanel();
+	JPanel bottomPanel = new JPanel();
+
+	JButton easyButton = new JButton("Easy");
+	JButton midButton = new JButton("Mid");
+	JButton hardButton = new JButton("Hard");
+	JButton resetButton = new JButton("Reset");
+	
+	JButton temp;
+
+	Game_GUI(int x, int y) {
+
 		super("Mine Sweeper");
 		setBounds(700, 400, 300, 200);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 		Container contain = this.getContentPane();
-		contain.add(panel);
 
-		pressme.addActionListener(this); // register button listener
-		contain.add(answer);
-		contain.add(pressme);
-		//pressme.requestFocus();
+		topPanel.setLayout(new FlowLayout());
+		topPanel.setPreferredSize(new Dimension(300, 40));
+		
+		topPanel.add(easyButton);
+		topPanel.add(midButton);
+		topPanel.add(hardButton);
+		topPanel.add(resetButton);
 
+		bottomPanel.setPreferredSize(new Dimension(x*10+1, y*1+1));
+		buttonPanel.setLayout(new GridLayout(x, y, 1, 1));
+		for (int i = 0; i < x * y; i++) {
+			temp = new JButton();
+			buttonList.add(temp);
+			buttonPanel.add(buttonList.get(i));
+		}
+
+
+		bottomPanel.setPreferredSize(new Dimension(300, 40));
+		
+		contain.add(topPanel, BorderLayout.NORTH);
+		contain.add(buttonPanel, BorderLayout.CENTER);
+		contain.add(bottomPanel, BorderLayout.SOUTH);
+		
+		this.setPreferredSize(new Dimension(300, 500));
+		this.pack();
 		setVisible(true);
 	}
 
-	// here is the basic event handler
-	public void actionPerformed(ActionEvent event) {
-		Object source = event.getSource();
-		if (source == pressme) {
-			answer.setText("Button pressed!");
-			JOptionPane.showMessageDialog(null, "I hear you!",
-					"Message Dialog", JOptionPane.PLAIN_MESSAGE);
-			setVisible(true); // show something
-		}
+	public static void main(String args[]) {
+		new Game_GUI(9, 9);
 	}
 
-	public static void main(String args[]) {
-		new Game_GUI();
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO Auto-generated method stub
+
 	}
 }
