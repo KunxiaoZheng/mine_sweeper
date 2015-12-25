@@ -5,5 +5,6 @@ public class mine_sweeper {
 		controller tempTest= new controller();
 		tempTest.new_game(2,10,10);
 		tempTest.printMap();
+		//System.out.print(0&7);
 	}
 }
