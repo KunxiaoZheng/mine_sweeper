@@ -111,21 +111,78 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 				new Game_GUI(currentGUISizeX, currentGUISizeY);
 			} else {
 				clickOnSafeButton((JButton) source, position / currentGUISizeX,
-						position % currentGUISizeX);
+						position % currentGUISizeX, position);
 			}
 		}
 	}
 
-	private void clickOnSafeButton(JButton button, int x, int y) {
+	private void clickOnSafeButton(JButton button, int x, int y, int position) {
 		int surroundingBomb = gameControl.checkSourrending(x, y);
 		if (surroundingBomb != 0) {
-			String temp = "" + surroundingBomb;
-			button.setText(temp);
-			button.setFont(new Font("Courier", Font.BOLD, 10));
-			button.setMargin(new Insets(0, 0, 0, 0));
-			button.setPreferredSize(new Dimension(25, 25));
+			showSurrounding(button,  x,  y,  surroundingBomb);
+		} else {
+			//openSurroundingButton(x, y, button, position);
 		}
+		 button.setEnabled(false);
+	}
+
+	private void showSurrounding(JButton button, int x, int y, int bombNum) {
+		String temp = "" + bombNum;
+		button.setText(temp);
+		button.setFont(new Font("Courier", Font.BOLD, 10));
+		button.setMargin(new Insets(0, 0, 0, 0));
+		button.setPreferredSize(new Dimension(25, 25));
 		button.setEnabled(false);
+	}
+
+	private void openSurroundingButton(int x, int y, JButton button,
+			int position) {
+		int surroundingBomb = gameControl.checkSourrending(x, y);
+		if (surroundingBomb != 0) {
+			showSurrounding(button, x, y, surroundingBomb);
+		} else {
+			if (button.isEnabled()) {
+				button.setEnabled(false);
+				if (x - 1 >= 0 && y - 1 >= 0) {
+					openSurroundingButton(x - 1, y - 1,
+							buttonList.get(position - currentGUISizeX - 1),
+							position - currentGUISizeX - 1);
+				}
+				if (y - 1 >= 0) {
+					openSurroundingButton(x , y - 1,
+							buttonList.get(position - currentGUISizeX),
+							position - currentGUISizeX);
+				}
+				if (x + 1 < currentGUISizeX && y - 1 >= 0) {
+					openSurroundingButton(x + 1, y - 1,
+							buttonList.get(position - currentGUISizeX + 1),
+							position - currentGUISizeX + 1);
+				}
+				if (x - 1 >= 0) {
+					openSurroundingButton(x - 1, y,
+							buttonList.get(position - 1), position - 1);
+				}
+				if (x + 1 < currentGUISizeX) {
+					openSurroundingButton(x + 1, y ,
+							buttonList.get(position + 1), position + 1);
+				}
+				if (x + 1 < currentGUISizeX && y + 1 < currentGUISizeX) {
+					openSurroundingButton(x +1, y + 1,
+							buttonList.get(position + currentGUISizeX + 1),
+							position + currentGUISizeX + 1);
+				}
+				if (x - 1 >= 0 && y + 1 < currentGUISizeY) {
+					openSurroundingButton(x - 1, y + 1,
+							buttonList.get(position + currentGUISizeX - 1),
+							position + currentGUISizeX - 1);
+				}
+				if (y + 1 < currentGUISizeY) {
+					openSurroundingButton(x, y + 1,
+							buttonList.get(position + currentGUISizeX),
+							position + currentGUISizeX);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -133,7 +190,7 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 		if (e.getSource() instanceof JButton
 				&& SwingUtilities.isRightMouseButton(e)) {
 			Object source = e.getSource();
-			if (((JButton) source).getIcon()==null) {
+			if (((JButton) source).getIcon() == null) {
 				if (((JButton) source).isEnabled()) {
 					int position = buttonList.indexOf(source);
 					ImageIcon temp = new ImageIcon(this.getClass().getResource(
@@ -142,7 +199,7 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 					System.out.print(position / currentGUISizeX);
 					System.out.print(position % currentGUISizeX);
 				}
-			}else{
+			} else {
 				((JButton) source).setIcon(null);
 			}
 		}

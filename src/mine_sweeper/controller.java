@@ -166,5 +166,6 @@ public class controller {
 			}
 			System.out.println();
 		}
+		System.out.println("----------------");
 	}
 }
