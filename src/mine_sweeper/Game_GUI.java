@@ -3,6 +3,7 @@ package mine_sweeper;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.EventObject;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -83,7 +84,7 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 	}
 
 	public static void main(String args[]) {
-		new Game_GUI(10, 10);
+		new Game_GUI(9, 9);
 	}
 
 	// top row buttons' action listener
@@ -120,45 +121,59 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 		int surroundingBomb = gameControl.checkSourrending(x, y);
 		if (surroundingBomb != 0) {
 			showSurrounding(button, x, y, surroundingBomb);
-			if (x - 1 >= 0 && y - 1 >= 0&&gameControl.checkSourrending(x-1, y-1)==0&&!gameControl.checkForBomb(x-1, y-1)) {
+			if (x - 1 >= 0 && y - 1 >= 0
+					&& gameControl.checkSourrending(x - 1, y - 1) == 0
+					&& !gameControl.checkForBomb(x - 1, y - 1)) {
 				openSurroundingButton(x - 1, y - 1,
 						buttonList.get(position - currentGUISizeY - 1),
 						position - currentGUISizeY - 1);
 			}
-			if (y - 1 >= 0&&gameControl.checkSourrending(x, y-1)==0&&!gameControl.checkForBomb(x, y-1)) {
-				openSurroundingButton(x, y - 1,
-						buttonList.get(position - 1), position - 1);
+			if (y - 1 >= 0 && gameControl.checkSourrending(x, y - 1) == 0
+					&& !gameControl.checkForBomb(x, y - 1)) {
+				openSurroundingButton(x, y - 1, buttonList.get(position - 1),
+						position - 1);
 			}
-			if (x + 1 < currentGUISizeX && y - 1 >= 0&&gameControl.checkSourrending(x+1, y-1)==0&&!gameControl.checkForBomb(x+1, y-1)) {
+			if (x + 1 < currentGUISizeX && y - 1 >= 0
+					&& gameControl.checkSourrending(x + 1, y - 1) == 0
+					&& !gameControl.checkForBomb(x + 1, y - 1)) {
 				openSurroundingButton(x + 1, y - 1,
 						buttonList.get(position + currentGUISizeY - 1),
 						position + currentGUISizeY - 1);
 			}
 
-			if (x - 1 >= 0&&gameControl.checkSourrending(x-1, y)==0&&!gameControl.checkForBomb(x-1, y)) {
+			if (x - 1 >= 0 && gameControl.checkSourrending(x - 1, y) == 0
+					&& !gameControl.checkForBomb(x - 1, y)) {
 				openSurroundingButton(x - 1, y,
-						buttonList.get(position - currentGUISizeY),
-						position - currentGUISizeY);
+						buttonList.get(position - currentGUISizeY), position
+								- currentGUISizeY);
 			}
-			if (x + 1 < currentGUISizeX&&gameControl.checkSourrending(x+1, y)==0&&!gameControl.checkForBomb(x+1, y)) {
+			if (x + 1 < currentGUISizeX
+					&& gameControl.checkSourrending(x + 1, y) == 0
+					&& !gameControl.checkForBomb(x + 1, y)) {
 				openSurroundingButton(x + 1, y,
-						buttonList.get(position + currentGUISizeY),
-						position + currentGUISizeY);
+						buttonList.get(position + currentGUISizeY), position
+								+ currentGUISizeY);
 			}
 
-			if (x + 1 < currentGUISizeX && y + 1 < currentGUISizeY&&gameControl.checkSourrending(x+1, y+1)==0&&!gameControl.checkForBomb(x+1, y+1)) {
+			if (x + 1 < currentGUISizeX && y + 1 < currentGUISizeY
+					&& gameControl.checkSourrending(x + 1, y + 1) == 0
+					&& !gameControl.checkForBomb(x + 1, y + 1)) {
 				openSurroundingButton(x + 1, y + 1,
 						buttonList.get(position + currentGUISizeY + 1),
 						position + currentGUISizeY + 1);
 			}
-			if (x - 1 >= 0 && y + 1 < currentGUISizeY&&gameControl.checkSourrending(x-1, y+1)==0&&!gameControl.checkForBomb(x-1, y+1)) {
+			if (x - 1 >= 0 && y + 1 < currentGUISizeY
+					&& gameControl.checkSourrending(x - 1, y + 1) == 0
+					&& !gameControl.checkForBomb(x - 1, y + 1)) {
 				openSurroundingButton(x - 1, y + 1,
 						buttonList.get(position - currentGUISizeY + 1),
 						position - currentGUISizeY + 1);
 			}
-			if (y + 1 < currentGUISizeY&&gameControl.checkSourrending(x, y+1)==0&&!gameControl.checkForBomb(x, y+1)) {
-				openSurroundingButton(x, y + 1,
-						buttonList.get(position + 1), position + 1);
+			if (y + 1 < currentGUISizeY
+					&& gameControl.checkSourrending(x, y + 1) == 0
+					&& !gameControl.checkForBomb(x, y + 1)) {
+				openSurroundingButton(x, y + 1, buttonList.get(position + 1),
+						position + 1);
 			}
 		} else {
 			openSurroundingButton(x, y, button, position);
@@ -229,20 +244,26 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (e.getSource() instanceof JButton
-				&& SwingUtilities.isRightMouseButton(e)) {
+		if (e.getSource() instanceof JButton) {
 			Object source = e.getSource();
-			if (((JButton) source).getIcon() == null) {
-				if (((JButton) source).isEnabled()) {
-					int position = buttonList.indexOf(source);
+			JButton button = (JButton) source;
+			int position = buttonList.indexOf(source);
+			if (!button.isEnabled()
+					&& SwingUtilities.isRightMouseButton(e)) {
+				System.out.println("test");
+				int bombNum = gameControl.checkSourrending(position
+						/ currentGUISizeX, position % currentGUISizeX);
+			} else if (button.isEnabled()
+					&& SwingUtilities.isRightMouseButton(e)
+					&& !SwingUtilities.isLeftMouseButton(e)) {
+				if (button.getIcon() == null) {
+					System.out.println("test2");
 					ImageIcon temp = new ImageIcon(this.getClass().getResource(
 							"/flag.png"));
-					((JButton) source).setIcon(temp);
-					System.out.print(position / currentGUISizeX);
-					System.out.print(position % currentGUISizeX);
+					button.setIcon(temp);
+				} else {
+					button.setIcon(null);
 				}
-			} else {
-				((JButton) source).setIcon(null);
 			}
 		}
 
