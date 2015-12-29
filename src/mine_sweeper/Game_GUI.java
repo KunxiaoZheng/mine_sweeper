@@ -120,10 +120,49 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 		int surroundingBomb = gameControl.checkSourrending(x, y);
 		if (surroundingBomb != 0) {
 			showSurrounding(button, x, y, surroundingBomb);
+			if (x - 1 >= 0 && y - 1 >= 0&&gameControl.checkSourrending(x-1, y-1)==0&&!gameControl.checkForBomb(x-1, y-1)) {
+				openSurroundingButton(x - 1, y - 1,
+						buttonList.get(position - currentGUISizeY - 1),
+						position - currentGUISizeY - 1);
+			}
+			if (y - 1 >= 0&&gameControl.checkSourrending(x, y-1)==0&&!gameControl.checkForBomb(x, y-1)) {
+				openSurroundingButton(x, y - 1,
+						buttonList.get(position - 1), position - 1);
+			}
+			if (x + 1 < currentGUISizeX && y - 1 >= 0&&gameControl.checkSourrending(x+1, y-1)==0&&!gameControl.checkForBomb(x+1, y-1)) {
+				openSurroundingButton(x + 1, y - 1,
+						buttonList.get(position + currentGUISizeY - 1),
+						position + currentGUISizeY - 1);
+			}
+
+			if (x - 1 >= 0&&gameControl.checkSourrending(x-1, y)==0&&!gameControl.checkForBomb(x-1, y)) {
+				openSurroundingButton(x - 1, y,
+						buttonList.get(position - currentGUISizeY),
+						position - currentGUISizeY);
+			}
+			if (x + 1 < currentGUISizeX&&gameControl.checkSourrending(x+1, y)==0&&!gameControl.checkForBomb(x+1, y)) {
+				openSurroundingButton(x + 1, y,
+						buttonList.get(position + currentGUISizeY),
+						position + currentGUISizeY);
+			}
+
+			if (x + 1 < currentGUISizeX && y + 1 < currentGUISizeY&&gameControl.checkSourrending(x+1, y+1)==0&&!gameControl.checkForBomb(x+1, y+1)) {
+				openSurroundingButton(x + 1, y + 1,
+						buttonList.get(position + currentGUISizeY + 1),
+						position + currentGUISizeY + 1);
+			}
+			if (x - 1 >= 0 && y + 1 < currentGUISizeY&&gameControl.checkSourrending(x-1, y+1)==0&&!gameControl.checkForBomb(x-1, y+1)) {
+				openSurroundingButton(x - 1, y + 1,
+						buttonList.get(position - currentGUISizeY + 1),
+						position - currentGUISizeY + 1);
+			}
+			if (y + 1 < currentGUISizeY&&gameControl.checkSourrending(x, y+1)==0&&!gameControl.checkForBomb(x, y+1)) {
+				openSurroundingButton(x, y + 1,
+						buttonList.get(position + 1), position + 1);
+			}
 		} else {
 			openSurroundingButton(x, y, button, position);
 		}
-		button.setEnabled(false);
 	}
 
 	private void showSurrounding(JButton button, int x, int y, int bombNum) {
