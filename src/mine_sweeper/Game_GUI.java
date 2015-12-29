@@ -119,11 +119,11 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 	private void clickOnSafeButton(JButton button, int x, int y, int position) {
 		int surroundingBomb = gameControl.checkSourrending(x, y);
 		if (surroundingBomb != 0) {
-			showSurrounding(button,  x,  y,  surroundingBomb);
+			showSurrounding(button, x, y, surroundingBomb);
 		} else {
-			//openSurroundingButton(x, y, button, position);
+			openSurroundingButton(x, y, button, position);
 		}
-		 button.setEnabled(false);
+		button.setEnabled(false);
 	}
 
 	private void showSurrounding(JButton button, int x, int y, int bombNum) {
@@ -137,6 +137,7 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 
 	private void openSurroundingButton(int x, int y, JButton button,
 			int position) {
+
 		int surroundingBomb = gameControl.checkSourrending(x, y);
 		if (surroundingBomb != 0) {
 			showSurrounding(button, x, y, surroundingBomb);
@@ -145,41 +146,43 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 				button.setEnabled(false);
 				if (x - 1 >= 0 && y - 1 >= 0) {
 					openSurroundingButton(x - 1, y - 1,
-							buttonList.get(position - currentGUISizeX - 1),
-							position - currentGUISizeX - 1);
+							buttonList.get(position - currentGUISizeY - 1),
+							position - currentGUISizeY - 1);
 				}
 				if (y - 1 >= 0) {
-					openSurroundingButton(x , y - 1,
-							buttonList.get(position - currentGUISizeX),
-							position - currentGUISizeX);
+					openSurroundingButton(x, y - 1,
+							buttonList.get(position - 1), position - 1);
 				}
 				if (x + 1 < currentGUISizeX && y - 1 >= 0) {
 					openSurroundingButton(x + 1, y - 1,
-							buttonList.get(position - currentGUISizeX + 1),
-							position - currentGUISizeX + 1);
+							buttonList.get(position + currentGUISizeY - 1),
+							position + currentGUISizeY - 1);
 				}
+
 				if (x - 1 >= 0) {
 					openSurroundingButton(x - 1, y,
-							buttonList.get(position - 1), position - 1);
+							buttonList.get(position - currentGUISizeY),
+							position - currentGUISizeY);
 				}
 				if (x + 1 < currentGUISizeX) {
-					openSurroundingButton(x + 1, y ,
-							buttonList.get(position + 1), position + 1);
+					openSurroundingButton(x + 1, y,
+							buttonList.get(position + currentGUISizeY),
+							position + currentGUISizeY);
 				}
-				if (x + 1 < currentGUISizeX && y + 1 < currentGUISizeX) {
-					openSurroundingButton(x +1, y + 1,
-							buttonList.get(position + currentGUISizeX + 1),
-							position + currentGUISizeX + 1);
+
+				if (x + 1 < currentGUISizeX && y + 1 < currentGUISizeY) {
+					openSurroundingButton(x + 1, y + 1,
+							buttonList.get(position + currentGUISizeY + 1),
+							position + currentGUISizeY + 1);
 				}
 				if (x - 1 >= 0 && y + 1 < currentGUISizeY) {
 					openSurroundingButton(x - 1, y + 1,
-							buttonList.get(position + currentGUISizeX - 1),
-							position + currentGUISizeX - 1);
+							buttonList.get(position - currentGUISizeY + 1),
+							position - currentGUISizeY + 1);
 				}
 				if (y + 1 < currentGUISizeY) {
 					openSurroundingButton(x, y + 1,
-							buttonList.get(position + currentGUISizeX),
-							position + currentGUISizeX);
+							buttonList.get(position + 1), position + 1);
 				}
 			}
 		}
