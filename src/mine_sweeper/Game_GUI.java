@@ -64,7 +64,6 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 			temp = new JButton();
 			buttonList.add(temp);
 			buttonPanel.add(buttonList.get(i));
-			temp.addActionListener(this);
 			temp.addMouseListener(this);
 		}
 
@@ -103,17 +102,7 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 			this.dispose();
 			new Game_GUI(currentGUISizeX, currentGUISizeY);
 		} else if (e.getSource() instanceof JButton) {
-			Object source = e.getSource();
-			int position = buttonList.indexOf(source);
-			if (gameControl.checkForBomb(position / currentGUISizeX, position
-					% currentGUISizeX)) {
-				JOptionPane.showMessageDialog(this, "hit a bomb");
-				this.dispose();
-				new Game_GUI(currentGUISizeX, currentGUISizeY);
-			} else {
-				clickOnSafeButton((JButton) source, position / currentGUISizeX,
-						position % currentGUISizeX, position);
-			}
+
 		}
 	}
 
@@ -242,22 +231,43 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 		}
 	}
 
+	private void endGameDisplay() {
+		for (JButton button : buttonList) {
+
+		}
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if (e.getSource() instanceof JButton) {
 			Object source = e.getSource();
 			JButton button = (JButton) source;
 			int position = buttonList.indexOf(source);
-			if (!button.isEnabled()
+			if (!button.isEnabled() && SwingUtilities.isLeftMouseButton(e)
 					&& SwingUtilities.isRightMouseButton(e)) {
 				System.out.println("test");
 				int bombNum = gameControl.checkSourrending(position
 						/ currentGUISizeX, position % currentGUISizeX);
 			} else if (button.isEnabled()
-					&& SwingUtilities.isRightMouseButton(e)
-					&& !SwingUtilities.isLeftMouseButton(e)) {
+					&& SwingUtilities.isLeftMouseButton(e)
+					&& !SwingUtilities.isRightMouseButton(e)
+					&& button.getIcon() == null) {
+				System.out.println("test2");
+				if (gameControl.checkForBomb(position / currentGUISizeX,
+						position % currentGUISizeX)) {
+					JOptionPane.showMessageDialog(this, "hit a bomb");
+					this.dispose();
+					new Game_GUI(currentGUISizeX, currentGUISizeY);
+				} else {
+					clickOnSafeButton((JButton) source, position
+							/ currentGUISizeX, position % currentGUISizeX,
+							position);
+				}
+			} else if (button.isEnabled()
+					&& !SwingUtilities.isLeftMouseButton(e)
+					&& SwingUtilities.isRightMouseButton(e)) {
 				if (button.getIcon() == null) {
-					System.out.println("test2");
+					System.out.println("test3");
 					ImageIcon temp = new ImageIcon(this.getClass().getResource(
 							"/flag.png"));
 					button.setIcon(temp);
