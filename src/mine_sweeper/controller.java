@@ -4,12 +4,14 @@ import java.util.Random;
 
 public class controller {
 	private static int[][] map;
+	private static int[][] userMap;
 
 	public void new_game() {
 		map = new int[10][10];
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[0].length; j++) {
 				map[i][j] = 0;
+				userMap[i][j] = 0;
 			}
 		}
 		addBomb();
@@ -17,9 +19,11 @@ public class controller {
 
 	public void new_game(int x, int y) {
 		map = new int[x][y];
+		userMap = new int[x][y];
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[0].length; j++) {
 				map[i][j] = 0;
+				userMap[i][j] = 0;
 			}
 		}
 		addBomb();
@@ -30,6 +34,7 @@ public class controller {
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[0].length; j++) {
 				map[i][j] = 0;
+				userMap[i][j] = 0;
 			}
 		}
 		insertBomb(bombNum);
@@ -39,6 +44,24 @@ public class controller {
 		int temp = map.length;
 		temp = temp * map[0].length;
 		insertBomb((int) (temp * 0.15));
+	}
+
+	public boolean userClick(int x, int y) {
+		userMap[x][y] = 1;
+		return compareMap();
+	}
+
+	private boolean compareMap() {
+		boolean result = true;
+		loop:for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[0].length; j++) {
+				if (map[i][j] == 0 && userMap[i][j] == 0) {
+					result = false;
+					break loop;
+				}
+			}
+		}
+		return result;
 	}
 
 	// adding a

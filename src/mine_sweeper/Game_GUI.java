@@ -28,6 +28,8 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 	int currentGUISizeX;
 	int currentGUISizeY;
 
+	static boolean endGame = false;
+
 	Game_GUI(int x, int y) {
 
 		super("Mine Sweeper");
@@ -36,6 +38,7 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 		gameControl.printMap();
 		currentGUISizeX = x;
 		currentGUISizeY = y;
+		endGame=false;
 
 		setBounds(700, 400, 300, 200);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,6 +65,9 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 
 		for (int i = 0; i < x * y; i++) {
 			temp = new JButton();
+			temp.setFont(new Font("Courier", Font.BOLD, 10));
+			temp.setMargin(new Insets(0, 0, 0, 0));
+			temp.setPreferredSize(new Dimension(25, 25));
 			buttonList.add(temp);
 			buttonPanel.add(buttonList.get(i));
 			temp.addMouseListener(this);
@@ -116,6 +122,7 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 				openSurroundingButton(x - 1, y - 1,
 						buttonList.get(position - currentGUISizeY - 1),
 						position - currentGUISizeY - 1);
+
 			}
 			if (y - 1 >= 0 && gameControl.checkSourrending(x, y - 1) == 0
 					&& !gameControl.checkForBomb(x, y - 1)) {
@@ -167,26 +174,36 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 		} else {
 			openSurroundingButton(x, y, button, position);
 		}
+		if (endGame) {
+			JOptionPane.showMessageDialog(this, "Congz,You cleared all bombs!!");
+			endGameDisplay();
+		}
 	}
 
 	private void showSurrounding(JButton button, int x, int y, int bombNum) {
 		String temp = "" + bombNum;
-		button.setText(temp);
-		button.setFont(new Font("Courier", Font.BOLD, 10));
-		button.setMargin(new Insets(0, 0, 0, 0));
-		button.setPreferredSize(new Dimension(25, 25));
+		if (bombNum != 0) {
+			button.setText(temp);
+		}
 		button.setEnabled(false);
+		if (!endGame) {
+			endGame = gameControl.userClick(x, y);
+		}
 	}
 
 	private void openSurroundingButton(int x, int y, JButton button,
 			int position) {
-
 		int surroundingBomb = gameControl.checkSourrending(x, y);
-		if (surroundingBomb != 0) {
+		if (surroundingBomb != 0 && (button.getIcon() == null)) {
 			showSurrounding(button, x, y, surroundingBomb);
+		} else if (button.getIcon() != null) {
+
 		} else {
 			if (button.isEnabled()) {
 				button.setEnabled(false);
+				if (!endGame) {
+					endGame = gameControl.userClick(x, y);
+				}
 				if (x - 1 >= 0 && y - 1 >= 0) {
 					openSurroundingButton(x - 1, y - 1,
 							buttonList.get(position - currentGUISizeY - 1),
@@ -232,8 +249,41 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 	}
 
 	private void endGameDisplay() {
+		ImageIcon mineUnopen = new ImageIcon(this.getClass().getResource(
+				"/mine1.jpg"));
+		ImageIcon mineOpen = new ImageIcon(this.getClass().getResource(
+				"/bomb2.gif"));
+		ImageIcon flag = new ImageIcon(this.getClass().getResource("/flag.png"));
+		ImageIcon wrongFlag = new ImageIcon(this.getClass().getResource(
+				"/wrongFlag.png"));
+		ImageIcon flaggedBomb = new ImageIcon(this.getClass().getResource(
+				"/flaggedBomb.PNG"));
+		int x, y;
 		for (JButton button : buttonList) {
-
+			x = (buttonList.indexOf(button)) / currentGUISizeY;
+			y = (buttonList.indexOf(button)) % currentGUISizeY;
+			if (gameControl.checkForBomb(x, y) && (button.getIcon() == null)) {
+				if (button.getIcon() == null) {
+					if (button.isEnabled()) {
+						button.setIcon(mineUnopen);
+					} else {
+						button.setIcon(null);
+						button.setIcon(mineOpen);
+					}
+				}
+			} else if (button.getIcon() == null) {
+				showSurrounding(button, x, y,
+						gameControl.checkSourrending(x, y));
+			} else {
+				System.out.println("test");
+				if (gameControl.checkForBomb(x, y)) {
+					button.setIcon(null);
+					button.setIcon(flaggedBomb);
+				} else {
+					button.setIcon(null);
+					button.setIcon(wrongFlag);
+				}
+			}
 		}
 	}
 
@@ -245,29 +295,25 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 			int position = buttonList.indexOf(source);
 			if (!button.isEnabled() && SwingUtilities.isLeftMouseButton(e)
 					&& SwingUtilities.isRightMouseButton(e)) {
-				System.out.println("test");
 				int bombNum = gameControl.checkSourrending(position
-						/ currentGUISizeX, position % currentGUISizeX);
+						/ currentGUISizeY, position % currentGUISizeY);
 			} else if (button.isEnabled()
 					&& SwingUtilities.isLeftMouseButton(e)
 					&& !SwingUtilities.isRightMouseButton(e)
 					&& button.getIcon() == null) {
-				System.out.println("test2");
-				if (gameControl.checkForBomb(position / currentGUISizeX,
-						position % currentGUISizeX)) {
+				if (gameControl.checkForBomb(position / currentGUISizeY,
+						position % currentGUISizeY)) {
 					JOptionPane.showMessageDialog(this, "hit a bomb");
-					this.dispose();
-					new Game_GUI(currentGUISizeX, currentGUISizeY);
+					endGameDisplay();
 				} else {
 					clickOnSafeButton((JButton) source, position
-							/ currentGUISizeX, position % currentGUISizeX,
+							/ currentGUISizeY, position % currentGUISizeY,
 							position);
 				}
 			} else if (button.isEnabled()
 					&& !SwingUtilities.isLeftMouseButton(e)
 					&& SwingUtilities.isRightMouseButton(e)) {
 				if (button.getIcon() == null) {
-					System.out.println("test3");
 					ImageIcon temp = new ImageIcon(this.getClass().getResource(
 							"/flag.png"));
 					button.setIcon(temp);
@@ -288,18 +334,15 @@ public class Game_GUI extends JFrame implements ActionListener, MouseListener {
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-
 	}
 }
